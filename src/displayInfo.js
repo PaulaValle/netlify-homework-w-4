@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import axios from "axios";
 import "./styles.css";
 
 export default function searchEngine() {
-  async function weather(city) {
+  async function weather(event) {
     function displayInformation(response) {
       return `
       <div>
@@ -21,6 +21,7 @@ export default function searchEngine() {
       </div>
       `;
     }
+    let city = event.target.value;
     let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=2f1b841a3b6dc609cb8924e01b3900c6&units=metric`;
     let response = null;
 
@@ -30,26 +31,17 @@ export default function searchEngine() {
     return displayInformation(response);
   }
 
-  let [city, setCity] = useState("");
   async function typedSubmit(event) {
+    let city = event.target.value;
     event.preventDefault();
     let result = document.querySelector(".result");
-    result.innerHTML = "";
-    if (city) {
-      result.innerHTML = await weather(city);
-    } else {
-      result.innerHTML = `<div>Loading information...</div>`;
-    }
-  }
-
-  function updateCity(event) {
-    setCity(event.target.value);
+    result.innerHTML = await weather(city);
   }
 
   return (
     <div>
       <form onSubmit={typedSubmit}>
-        <input type="search" onChange={updateCity} />
+        <input type="search" onChange={weather} />
         <input type="submit" value="Search" />
         <div className="errorEmptyCity"></div>
       </form>
